@@ -19,7 +19,11 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2838ec85-bfe3-4376-b354-ff5e1a441700" name="Default Changelist" comment="ex0done" />
+    <list default="true" id="2838ec85-bfe3-4376-b354-ff5e1a441700" name="Default Changelist" comment="ex0done">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/index.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/toto.png" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -64,7 +68,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1606729255552</updated>
-      <workItem from="1606729256653" duration="2191000" />
+      <workItem from="1606729256653" duration="3239000" />
     </task>
     <task id="LOCAL-00001" summary="ex0done">
       <created>1606735799902</created>
@@ -93,5 +97,15 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="ex0done" />
     <option name="LAST_COMMIT_MESSAGE" value="ex0done" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="2352" y="259" key="Vcs.Push.Dialog.v2" timestamp="1606735804010">
+      <screen x="1792" y="25" width="1920" height="994" />
+    </state>
+    <state x="2352" y="259" key="Vcs.Push.Dialog.v2/1792.25.1920.994/0.25.1792.1095@1792.25.1920.994" timestamp="1606735804010" />
+    <state x="2558" y="440" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1606735756345">
+      <screen x="1792" y="25" width="1920" height="994" />
+    </state>
+    <state x="2558" y="440" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/1792.25.1920.994/0.25.1792.1095@1792.25.1920.994" timestamp="1606735756345" />
   </component>
 </project>
