@@ -13,23 +13,7 @@ function my_merge_image($first_img_path, $second_img_path, $filename){
     imagecopy($new, $source2, 0, $img1_height, 0, 0, $img2_width, $img2_height);
     imagepng($new, "$filename");
 
-    /*foreach ($new as $file => $img) {
-        if (isset($img['extension'], $img['x'], $img['y'], $img['width'], $img['height'])) {
-            image_overlay(
-                $new,
-                $path.'/'.$file,
-                $img['extension'],
-                $type=='x'? 0 : $img['x'], // dst_x
-                $type=='t'? 0 : $img['y'], // dst_y
-                0, // src_x
-                0, // src_y
-                $type=='x'? $x : $img['width'], // dst_w
-                $type=='y'? $y : $img['height'], // dst_h
-                $img['width'], // src_w
-                $img['height'] // src_h
-            );
-        }
-    }*/
+
 
 
     #Création du fichier css et transfert des données dans le fichier.
@@ -42,6 +26,9 @@ function my_merge_image($first_img_path, $second_img_path, $filename){
 }
 my_merge_image("a.png", "b.png", "merge.png");
 
+
+
+#ETAPE 2
 /*function my_scandir($dir_path){
 
     if ($handle = opendir('.')) {
@@ -56,4 +43,4 @@ my_merge_image("a.png", "b.png", "merge.png");
 
         closedir($handle);
     }
-}*/
+}
