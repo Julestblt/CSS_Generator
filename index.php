@@ -1,6 +1,5 @@
 <?php
 function my_merge_image($first_img_path, $second_img_path, $filename){
-    system('rm style.css');
     $image1 = dirname($first_img_path);
     $image2 = dirname($second_img_path);
 
@@ -21,7 +20,7 @@ function my_merge_image($first_img_path, $second_img_path, $filename){
 
     imagepng($im, "$filename");
     #Création du fichier css et transfert des données dans le fichier.
-    function my_generate_css($cssfilename){
+    function my_generate_css($cssfilename, $filename){
     $fp = fopen("$cssfilename", 'w');
     fwrite($fp, ".sprite {\n background-image: url($filename); \n}\n");
     fwrite($fp, ".img1 {\n width: ".$size1."px;\n height: ".$size1."px;\n}");
@@ -30,7 +29,7 @@ function my_merge_image($first_img_path, $second_img_path, $filename){
     }
 }
 my_merge_image("a.png", "b.png", "toto.png");
-my_generate_css('style.css');
+my_generate_css('style.css', 'toto.png');
 
 
 /*function my_scandir($dir_path){
