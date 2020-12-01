@@ -1,36 +1,46 @@
 <?php
 function my_merge_image($first_img_path, $second_img_path, $filename){
-    $image1 = dirname($first_img_path);
-    $image2 = dirname($second_img_path);
+    list($img1_width, $img1_height) = getimagesize($first_img_path);
+    list($img2_width, $img2_height) = getimagesize($second_img_path);
+    $source1 = imagecreatefrompng($first_img_path);
+    $source2 = imagecreatefrompng($second_img_path);
+    $new_width = $img1_width > $img2_width ? $img1_width : $img2_width;
+    $new_height = $img1_height + $img2_height;
+    $new = imagecreatetruecolor($new_width, $new_height);
+    imagealphablending($new, false);
+    imagesavealpha($new, true);
+    imagecopy($new, $source1, 0, 0, 0, 0, $img1_width, $img1_height);
+    imagecopy($new, $source2, 0, $img1_height, 0, 0, $img2_width, $img2_height);
+    imagepng($new, "$filename");
 
-    /* Get images dimensions */
-    $size1 = getimagesize($first_img_path);
-    $size2 = getimagesize($second_img_path);
+    /*foreach ($new as $file => $img) {
+        if (isset($img['extension'], $img['x'], $img['y'], $img['width'], $img['height'])) {
+            image_overlay(
+                $new,
+                $path.'/'.$file,
+                $img['extension'],
+                $type=='x'? 0 : $img['x'], // dst_x
+                $type=='t'? 0 : $img['y'], // dst_y
+                0, // src_x
+                0, // src_y
+                $type=='x'? $x : $img['width'], // dst_w
+                $type=='y'? $y : $img['height'], // dst_h
+                $img['width'], // src_w
+                $img['height'] // src_h
+            );
+        }
+    }*/
 
-    /* Load the two existing images */
-    $im1 = imagecreatefrompng($first_img_path);
-    $im2 = imagecreatefrompng($second_img_path);
 
-    /* Create the new image, width is combined but height is the max height of either image */
-    $im = imagecreatetruecolor($size1[0] + $size2[0], max($size1[1], $size2[1]));
-
-    /* Merge the two images into the new one */
-    imagecopy($im, $im1, 0, 0, 0, 0, $size1[0], $size1[1]);
-    imagecopy($im, $im2, $size1[0], 0, 0, 0, $size2[0], $size2[1]);
-
-    imagepng($im, "$filename");
     #Création du fichier css et transfert des données dans le fichier.
-    function my_generate_css($cssfilename, $filename){
-    $fp = fopen("$cssfilename", 'w');
-    fwrite($fp, ".sprite {\n background-image: url($filename); \n}\n");
-    fwrite($fp, ".img1 {\n width: ".$size1."px;\n height: ".$size1."px;\n}");
-    fwrite($fp, "\n.img2 {\n width: ".$size2."px;\n height: ".$size2."px;\n}");
-    fclose($fp);
-    }
-}
-my_merge_image("a.png", "b.png", "toto.png");
-my_generate_css('style.css', 'toto.png');
+        $fp = fopen("style.css", 'w');
+        fwrite($fp, ".sprite {\n background-image: url($filename); \n}\n");
+        fwrite($fp, ".img1 {\n width: ".$img1_width."px;\n height: ".$img1_height."px;\n}");
+        fwrite($fp, "\n.img2 {\n width: ".$img2_width."px;\n height: ".$img2_height."px;\n}");
+        fclose($fp);
 
+}
+my_merge_image("a.png", "b.png", "merge.png");
 
 /*function my_scandir($dir_path){
 
