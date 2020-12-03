@@ -14,27 +14,24 @@ function my_merge_image($first_img_path, $second_img_path, $filename){
     imagepng($new, "$filename");
 
 
-
-
-    #Création du fichier css et transfert des données dans le fichier.
         $fp = fopen("style.css", 'w');
         fwrite($fp, ".sprite {
-         background-image: url($filename);
-         background-repeat: no-repeat;
-         display: block;
-         }\n");
+    background-image: url($filename);
+    background-repeat: no-repeat;
+    display: block;
+}\n");
 
-        fwrite($fp, ".img1 {
-         width: ".$img1_width."px;
-         height: ".$img1_height."px;
-         background-position: 0px 0px;
-         }\n");
+        fwrite($fp, ".sprite-c {
+    width: ".$img1_width."px;
+    height: ".$img1_height."px;
+    background-position: 0px 0px;
+}\n");
 
-        fwrite($fp, ".img2 {
-         width: ".$img2_width."px;
-         height: ".$img2_height."px;
-         background-position: 0px ".$img1_height."px;
-         }");
+        fwrite($fp, ".sprite-d {
+    width: ".$img2_width."px;
+    height: ".$img2_height."px;
+    background-position: 0px -".$img1_height."px;
+}");
         fclose($fp);
 
         if ($handle = opendir('.')) {
@@ -49,7 +46,5 @@ function my_merge_image($first_img_path, $second_img_path, $filename){
 
             closedir($handle);
         }
-
-
 }
 my_merge_image("c.png", "d.png", "merge.png");
