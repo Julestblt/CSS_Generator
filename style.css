@@ -3,12 +3,12 @@
     background-repeat: no-repeat;
     display: block;
 }
-.sprite-c {
+#img1 {
     width: 256px;
     height: 256px;
     background-position: 0px 0px;
 }
-.sprite-d {
+#img2 {
     width: 256px;
     height: 256px;
     background-position: 0px -256px;

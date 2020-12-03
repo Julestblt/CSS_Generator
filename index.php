@@ -15,19 +15,19 @@ function my_merge_image($first_img_path, $second_img_path, $filename){
 
 
         $fp = fopen("style.css", 'w');
-        fwrite($fp, ".sprite-c, .sprite-d {
+        fwrite($fp, ".sprite {
     background-image: url($filename);
     background-repeat: no-repeat;
     display: block;
 }\n");
 
-        fwrite($fp, ".sprite-c {
+        fwrite($fp, "#img1 {
     width: ".$img1_width."px;
     height: ".$img1_height."px;
     background-position: 0px 0px;
 }\n");
 
-        fwrite($fp, ".sprite-d {
+        fwrite($fp, "#img2 {
     width: ".$img2_width."px;
     height: ".$img2_height."px;
     background-position: 0px -".$img1_height."px;
