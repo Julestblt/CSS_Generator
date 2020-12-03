@@ -15,6 +15,10 @@ function my_merge_image($first_img_path, $second_img_path, $filename){
 
 
         $fp = fopen("style.css", 'w');
+        fwrite($fp, "*{
+    padding: 0px;
+    margin: 0px;
+}\n");
         fwrite($fp, ".sprite {
     background-image: url($filename);
     background-repeat: no-repeat;
@@ -31,6 +35,9 @@ function my_merge_image($first_img_path, $second_img_path, $filename){
     width: ".$img2_width."px;
     height: ".$img2_height."px;
     background-position: 0px -".$img1_height."px;
+    position: absolute;
+    left: 962px;
+    top: 0px;
 }");
         fclose($fp);
 
@@ -47,4 +54,4 @@ function my_merge_image($first_img_path, $second_img_path, $filename){
             closedir($handle);
         }
 }
-my_merge_image("c.png", "d.png", "merge.png");
+my_merge_image("sasuke.png", "naruto.png", "merge.png");
