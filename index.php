@@ -15,7 +15,7 @@ function my_merge_image($first_img_path, $second_img_path, $filename){
 
 
         $fp = fopen("style.css", 'w');
-        fwrite($fp, ".sprite {
+        fwrite($fp, ".sprite-c, .sprite-d {
     background-image: url($filename);
     background-repeat: no-repeat;
     display: block;
