@@ -10,9 +10,7 @@ $cymax = 0;
 /* On definis sprite large en false pour que les images soit en colonnes si l'utilisateur décide
    qu'il veut un sprite en largeur il devras retourner True
 */
-$spriteLarge = False;
-// Temporaire
-$cssfile="style.css";
+$spriteLarge = True;
 
 // Ici on récupere les width , height et path de chaque image récuperer via Func_recursive
 function Func_addpng($path) {
@@ -29,14 +27,16 @@ function Func_addpng($path) {
 function Func_BuildNewPng()
 {
     global $pngsource, $cxmax, $cymax;
-    // donc on defini fixed size en false de base si l'utilisateur veux une taille définis il va falloir faire en sorte qu'il puisse changer la valeur en true puis lui demander les valeurs
+    // donc on defini fixed size en false de base si l'utilisateur veux une taille définis il va falloir faire en sorte qu'il
+    // puisse changer la valeur en true puis lui demander les valeurs
     $fixedSize = false;
     // temporaire mais ici on définis les valeurs a 150 comme si l'utilisateur voulais que chaque image fasse 150x150
     $cxfixe = 150;
     $cyfixe = 150;
 
-    // On definis spritelarge en false donc le sprite sera crée en hauteur l'utilisateur pourras choisir de changer la valeur en true pour qu'il puisse avoir un sprite en largeur
-    $spriteLarge = false;
+    // On definis spritelarge en false donc le sprite sera crée en hauteur l'utilisateur pourras choisir de changer la valeur en true pour
+    // qu'il puisse avoir un sprite en largeur
+    $spriteLarge = True;
 
     // on a une boucle foreach
     foreach ($pngsource as $png) {
@@ -54,13 +54,14 @@ function Func_BuildNewPng()
             $cxmax = $png["cx"] + $cxmax;
         }
 
-
+var_dump($cxmax);
     }
 }
 
 // fonction qui créer et reprends les valeurs récupéré préalablement (x et y) pour créer le css en fonction des valeurs
 function Func_create_css_and_add_values($cssfile, $filename){
-    global $pngsource, $cptimg, $spriteLarge;
+    global $pngsource, $spriteLarge;
+    $cptimg = 1;
     // on crée 2 variables pour le background position que l'on definis a 0
     $positionx = 0;
     $positiony = 0;
@@ -99,7 +100,7 @@ function Func_create_css_and_add_values($cssfile, $filename){
 // fonction qui crée le sprite
 function Func_BuildSprite($filename) {
 
-    global $cxmax, $cymax;
+    global $cxmax, $cymax, $path;
     // on lui donne les valeurs final du sprite (cxmax et cymax)
     $new = imagecreatetruecolor($cxmax, $cymax);
     $bg = imagecolorallocate($new, 0 , 0, 0);
