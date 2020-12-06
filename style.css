@@ -1,0 +1,39 @@
+* {
+    margin: 0px;
+    padding: 0px;
+}
+.sprite {
+    background-image: url(merge.png);
+    background-repeat: no-repeat;
+    display: block;
+}
+#img {
+    width: 1560px;
+    height: 1521px;
+    background-position: 0px 0px;
+}
+#img1 {
+    width: 750px;
+    height: 753px;
+    background-position: 1560px 0px;
+}
+#img2 {
+    width: 958px;
+    height: 1078px;
+    background-position: 2310px 0px;
+}
+#img3 {
+    width: 900px;
+    height: 884px;
+    background-position: 3268px 0px;
+}
+#img4 {
+    width: 962px;
+    height: 1079px;
+    background-position: 4168px 0px;
+}
+#img5 {
+    width: 731px;
+    height: 750px;
+    background-position: 5130px 0px;
+}
