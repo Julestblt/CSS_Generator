@@ -17,7 +17,7 @@ $cymax = 0;
 /* On definis sprite large en false pour que les images soit en colonnes si l'utilisateur décide
    qu'il veut un sprite en largeur il devras retourner True
 */
-$spriteLarge = True;
+$spriteLarge = False;
 
 // Les argumens passés en paramètre
 $szOutPngFile = "";
@@ -41,12 +41,9 @@ function Func_addpng($path) {
 // Ici on determine si l'on veux que le sprite soit en hauteur ou largeur via un True / false et si l'utilisateur veux definir une valeur de ses images
 function calculate_size()
 {
-    global $pngsource, $cxmax, $cymax, $spriteLarge;
+    global $pngsource, $cxmax, $cymax, $spriteLarge, $cxfixe, $cyfixe, $fixedSize;
     // donc on defini fixed size en false de base si l'utilisateur veux une taille définis il va falloir faire en sorte qu'il puisse changer la valeur en true puis lui demander les valeurs
-    $fixedSize = false;
-    // temporaire mais ici on définis les valeurs a 150 comme si l'utilisateur voulais que chaque image fasse 150x150
-    $cxfixe = 150;
-    $cyfixe = 150;
+
 
     // on a une boucle foreach
     foreach ($pngsource as $png) {
@@ -85,7 +82,7 @@ function my_generate_css($cssfile,$pngfile) {
     $positiony = 0;
 
     $sprite = imagecreatetruecolor($cxmax, $cymax);
-    $bg = imagecolorallocate($sprite, 0 , 0, 0);
+    $bg = imagecolorallocatealpha($sprite, 255 , 255, 255, 127);
     imagefill($sprite, 0, 0, $bg);
     imagealphablending($sprite, false);
     imagesavealpha($sprite , true);
@@ -94,7 +91,7 @@ function my_generate_css($cssfile,$pngfile) {
     $fp = fopen("$cssfile", "w+");
     fwrite($fp, "* {
     margin: 0px;
-    padding: Opx;
+    padding: 0px;
 }\n");
     fwrite($fp, ".sprite {
     background-image: url($pngfile);
