@@ -26,6 +26,36 @@ $szFoldertoScan = "";
 $fRecursive = false;
 $iSize = 0;
 
+// fonction recursive qui va recuperer les fichier png dans le dossier et dans les sous dossier !! A CHANGER LE OPENDIR !!
+function my_scandir($pathname) {
+
+    global $fRecursive;
+
+    if ($handle = opendir($pathname)) {
+
+        while (false !== ($entry = readdir($handle))) {
+
+            // on ne teste pas les . et ..
+            if ($entry != "." && $entry != "..") {
+
+                $fullpath=realpath($pathname.DIRECTORY_SEPARATOR.$entry);
+
+                // Check if png
+                if( strtolower(substr($fullpath, strrpos($fullpath, '.') + 1)) == 'png')
+                {
+                    Func_addpng($fullpath);
+                }
+                else {
+                    if (is_dir($fullpath) && $fRecursive == true) my_scandir($fullpath);
+                }
+
+            }
+        }
+
+        closedir($handle);
+    }
+
+}
 
 // Ici on récupere les width , height et path de chaque image récuperer via Func_recursive
 function Func_addpng($path) {
@@ -139,39 +169,6 @@ function my_generate_css($cssfile,$pngfile) {
 
 
 }
-
-
-// fonction recursive qui va recuperer les fichier png dans le dossier et dans les sous dossier !! A CHANGER LE OPENDIR !!
-function my_scandir($pathname) {
-
-    global $fRecursive;
-
-    if ($handle = opendir($pathname)) {
-
-        while (false !== ($entry = readdir($handle))) {
-
-            // on ne teste pas les . et ..
-            if ($entry != "." && $entry != "..") {
-
-                $fullpath=realpath($pathname.DIRECTORY_SEPARATOR.$entry);
-
-                // Check if png
-                if( strtolower(substr($fullpath, strrpos($fullpath, '.') + 1)) == 'png')
-                {
-                    Func_addpng($fullpath);
-                }
-                else {
-                    if (is_dir($fullpath) && $fRecursive == true) my_scandir($fullpath);
-                }
-
-            }
-        }
-
-        closedir($handle);
-    }
-
-}
-
 
 // Cette fonction est appellée lorsqu'un argument est manquant ou incoorect
 // Paramètres:
