@@ -1,11 +1,5 @@
 <?php
 
-//
-// Exemple d'utilisation
-// php index.php -outpng=test.png -outcss=test.css images
-// php index.php -outpng=test.png -outcss=test.css -r images
-//
-
 // On définit la largeur/hauteur max dans le cas ou il n'y a pas d'images
 $cxmax = 0;
 $cymax = 0;
@@ -62,11 +56,9 @@ $fDebug = false;
 $iOverrideValue = 0;
 $fOverrideSize = false;
 
-/*-c, --columns_number=NUMBER
-The maximum number of elements to be generated horizontaly
--h, --manual
-*/
-
+// -h, --output-html
+// Choose the html file name, on definis le fichier html a index.html si il n'y a pas d'entrée
+$szOutHTMLFile= "index.html";
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FuncAddPNG
@@ -74,14 +66,14 @@ The maximum number of elements to be generated horizontaly
 //
 function FuncAddPNG($path) {
     global $pngsource, $pngnum;
-  
+
     // on récupere les valeurs x et y via get image size via le $path
     list($cx, $cy) = getimagesize($path);
-  
+
     // on crée un tableau $pngsource,
     // pngnum s'incremente a chaque valeur récuperée via le tableau multidimentionnel (tableau de tableau)
     $pngsource[$pngnum] = array("cx"=>$cx,"cy"=>$cy,"path"=>$path);
-  
+
     // ici on incremente a chaque image passée
     $pngnum = $pngnum+1;
 }
@@ -201,9 +193,9 @@ function FuncGenerateCSS_PNG($cssfile,$pngfile) {
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Function qui créer l'html
-function FuncGenerateHTML($htmlfile){
-    global $cpthmtl, $pngsource, $szOutCssFile;
-    $fo = fopen($htmlfile, 'w+');
+function FuncGenerateHTML(){
+    global $cpthmtl, $pngsource, $szOutCssFile, $szOutHTMLFile;
+    $fo = fopen($szOutHTMLFile, 'w+');
     fwrite($fo, '<!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -358,7 +350,7 @@ function Debug($message)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cette fonction affiche le man
 function FuncHelp() {
-echo <<<EOL
+    echo <<<EOL
 CSS_GENERATOR(1) UserCommands CSS_GENERATOR(1)
 
 NAME
@@ -429,7 +421,7 @@ function FuncTestArgs()
     global $argc, $argv ;
 
     // Variables d'aguments passés en ligne de commande
-    global $fRecursive, $iOverrideValue, $fOverrideSize, $szOutPngFile, $szOutCssFile, $szFoldertoScan,$fSpriteRow,$fDeletePNG,$fDebug;
+    global $fRecursive, $iOverrideValue, $fOverrideSize, $szOutPngFile, $szOutCssFile, $szFoldertoScan,$fSpriteRow,$fDeletePNG,$fDebug, $szOutHTMLFile;
 
     // Tester le nombre minimal d'arguments
     // css_generator assets_folder
@@ -535,9 +527,13 @@ function FuncTestArgs()
                         $fOverrideSize = true;
                     } else FuncBadArgs($arg);
                     break;
-                case "-h":
-                case "--help":
+                case "-m":
+                case "--manual":
                     FuncHelp();
+                    break;
+                case "-h";
+                case "--output-html";
+                    $szOutHTMLFile = $value;
                     break;
                 default:
                     FuncBadArgs($arg);
@@ -599,7 +595,7 @@ FuncCalculateSize();
 // Quatrième bloc
 // Generer le CSS et le PNG
 FuncGenerateCSS_PNG($szOutCssFile,$szOutPngFile);
-FuncGenerateHTML("index.html");
+FuncGenerateHTML();
 // Cinquième bloc
 // Supprimer les source PNG
 if($fDeletePNG==true) FuncDeletePNG();
