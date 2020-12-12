@@ -1,5 +1,11 @@
 <?php
 
+//
+// Exemple d'utilisation
+// php index.php -outpng=test.png -outcss=test.css images
+// php index.php -outpng=test.png -outcss=test.css -r images
+//
+
 // On définit la largeur/hauteur max dans le cas ou il n'y a pas d'images
 $cxmax = 0;
 $cymax = 0;
@@ -42,24 +48,24 @@ $szOutCssFile = "style.css";
 // Delete the original PNG after the merge. If blank, the default style is false.
 $fDeletePNG = false;
 
-// -c, --columns_number=NUMBER
-// The maximum number of elements to be generated horizontaly
-$imaxColumnNumber = 1;
+// -w, --row
+// Create a sprite - or |
+$fSpriteRow = false;
 
 // --debug
 // Hidden option to enable the debug mode
 $fDebug = false;
 
 
-/*
--p, --padding=NUMBER
-Add padding between images of NUMBER pixels.
-*/
-
 // -o, --override-size=SIZE
 // Force each images of the sprite to fit a size of SIZExSIZE pixels.
 $iOverrideValue = 0;
 $fOverrideSize = false;
+
+/*-c, --columns_number=NUMBER
+The maximum number of elements to be generated horizontaly
+-h, --manual
+*/
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,14 +74,14 @@ $fOverrideSize = false;
 //
 function FuncAddPNG($path) {
     global $pngsource, $pngnum;
-
+  
     // on récupere les valeurs x et y via get image size via le $path
     list($cx, $cy) = getimagesize($path);
-
+  
     // on crée un tableau $pngsource,
     // pngnum s'incremente a chaque valeur récuperée via le tableau multidimentionnel (tableau de tableau)
-    $pngsource[$pngnum] = array("x"=>$x,"y"=>$y,"cx"=>$cx,"cy"=>$cy,"path"=>$path);
-
+    $pngsource[$pngnum] = array("cx"=>$cx,"cy"=>$cy,"path"=>$path);
+  
     // ici on incremente a chaque image passée
     $pngnum = $pngnum+1;
 }
@@ -86,7 +92,7 @@ function FuncAddPNG($path) {
 //
 function FuncCalculateSize()
 {
-    global $pngsource, $cxmax, $cymax, $iOverrideValue, $fOverrideSize, $imaxColumnNumber;
+    global $pngsource, $cxmax, $cymax, $iOverrideValue, $fOverrideSize, $fSpriteRow;
 
     // on définit les valeurs x et y fixes à partir de la variable $iOverrideValue
     // X et Y seront donc identiques
@@ -94,19 +100,6 @@ function FuncCalculateSize()
     $cxfixe = $iOverrideValue;
     $cyfixe = $iOverrideValue;
 
-    // Compteur du numero de colonne pour repartition
-    $cbColumnNumber = 1;
-    $cbRowNumber = 1;
-
-    // Marqueur de position des PNG dans le sprite
-    $xPNG = 0 ;
-    $yPNG = 0 ;
-    $maxyPNG = 0;
-
-    // Compteur
-    $cptPNG=0;
-
-    // on a une boucle foreach
     foreach ($pngsource as $png) {
 
         // ici si on permet a l'utilisateur de changer la valeurs x et y de notre tableau multidimentionnel
@@ -114,47 +107,22 @@ function FuncCalculateSize()
         $cx = $fOverrideSize == true ? $cxfixe : $png["cx"];
         $cy = $fOverrideSize == true ? $cyfixe : $png["cy"];
 
-        if ($cbColumnNumber > $imaxColumnNumber) {
-            $cbColumnNumber = 1;
-            $cbRowNumber=$cbRowNumber+1;
-            $xPNG=0;
-            $yPNG=$yPNG+$maxyPNG;
-            $maxyPNG=0;
+        // condition si pour avoir le sprit en hauteur via le false
+        // mode column
+        if ($fSpriteRow == false) {
+            $cxmax = $cx > $cxmax ? $cx : $cxmax;
+            $cymax = $cy + $cymax;
         }
-
-        // Placement
-        Debug("-------");
-        Debug("row=".$cbRowNumber." col=".$cbColumnNumber);
-
-        // Placement du PNG dans le sprite
-        Debug("xPNG= $xPNG  yPNG=$yPNG");
-        Debug("cx= $cx  cy=$cy");
-        $pngsource[$cptPNG]["cx"] = $cx;
-        $pngsource[$cptPNG]["cy"] = $cy;
-        $pngsource[$cptPNG]["x"] = $xPNG;
-        $pngsource[$cptPNG]["y"] = $yPNG;
-
-        // Recalcul de la taille du Sprite Total
-        $cxmax = $xPNG + $cx > $cxmax ? $xPNG + $cx : $cxmax;
-        $cymax = $yPNG + $cy > $cymax ? $yPNG + $cy : $cymax;
-
-        // On avance sur le PNG suivant
-        $cptPNG = $cptPNG + 1 ;
-
-        // Calcul de la position X pour le PNG suivant
-        $xPNG = $xPNG + $cx ;
-
-        // On recalcule le Y max pour la ligne en cours
-        $maxyPNG = $cy > $maxyPNG ? $cy : $maxyPNG;
-
-        // On incrémente la colonne dans le SPRITE
-        $cbColumnNumber = $cbColumnNumber +1;
-
+        // condition else si $fSpriteRow == pas a false donc a true on auras donc un sprite en largeur
+        // mode row
+        else {
+            $cymax = $cy > $cymax ? $cy : $cymax;
+            $cxmax = $cx + $cxmax;
+        }
     }
 
-    Debug("-------");
-    Debug("cxmax= $cxmax  cymax= $cymax");
-    Debug("-------");
+    Debug("cxmax=".$cxmax);
+    Debug("cymax=".$cymax);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,11 +130,14 @@ function FuncCalculateSize()
 // fonction qui créer et reprends les valeurs récupéré préalablement (x et y) pour créer le css et le png
 function FuncGenerateCSS_PNG($cssfile,$pngfile) {
 
-    global $pngsource, $cptimg, $cxmax,$cymax;
+    global $pngsource, $cptimg, $fSpriteRow,$cxmax,$cymax;
+
+    // on crée 2 variables pour le background position que l'on definis a 0
+    $positionx = 0;
+    $positiony = 0;
 
     // Creation du sprite à la taille prealablement calculee cxmax et ctag
     // $sprite est le handle de sprite
-    Debug("cxmax= $cxmax  cymax= $cymax");
     $sprite = imagecreatetruecolor($cxmax, $cymax);
     $bg = imagecolorallocatealpha($sprite, 0 , 0, 0, 127);
     imagefill($sprite, 0, 0, $bg);
@@ -185,8 +156,6 @@ function FuncGenerateCSS_PNG($cssfile,$pngfile) {
     foreach($pngsource as $key => $value) {
 
         // on définit la valeurs que l'on a récuperer via le tableau
-        $x = $value["x"];
-        $y = $value["y"];
         $width = $value["cx"];
         $height = $value["cy"];
 
@@ -194,19 +163,25 @@ function FuncGenerateCSS_PNG($cssfile,$pngfile) {
         fwrite($fp, "#img$cptimg {
     width: " . $width . "px;
     height: " . $height . "px;
-    background-position: " . $x . "px ".$y."px;
+    background-position: " . $positionx . "px ".$positiony."px;
 }");
 
         // FAIRE LE MERGE
         $src = imagecreatefrompng($value["path"]);
-        list($oricx, $oricy) = getimagesize($value["path"]);
-        //imagecopy($sprite,$src,$x,$y,0,0,$width,$height);
-        imagecopyresized($sprite,$src,$x,$y,0,0,$width,$height,$oricx, $oricy);
+        imagecopy($sprite,$src,$positionx,$positiony,0,0,$width,$height);
 
         // au dessus on a donc nos 2 position x et y prédefinis a 0
         // cpt img s'incrémente de 1 a chaque fois que la boucle ecris le css du png
-        $cptimg += 1;
+        $cptimg++;
 
+        // condition pour savoir si le sprite sera en largeur ou hauteur donc pour savoir si il faut placer la position x ou y et savoir laquelle restera a 0px
+        if ($fSpriteRow == True) {
+            // on veut pas recuperer la premiere position car la premiere image sera de 0px 0px donc on commence a partir de la width += 1
+            $positionx += $width;
+        } else {
+            // pareil qu'au dessus mais avec la hauteur
+            $positiony += $height;
+        }
 
         imagedestroy($src);
     }
@@ -220,33 +195,34 @@ function FuncGenerateCSS_PNG($cssfile,$pngfile) {
     // Liberer le handle $sprite de fichier PNG
     imagedestroy($sprite);
 
-
 }
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Function qui créer l'html
 function FuncGenerateHTML($htmlfile){
-    global $cptimg, $pngsource;
+    global $cpthmtl, $pngsource, $szOutCssFile;
     $fo = fopen($htmlfile, 'w+');
-    fwrite($fo, "
-<!DOCTYPE html>
-<html lang=\"fr\">
+    fwrite($fo, '<!DOCTYPE html>
+<html lang="fr">
 <head>
-    <link rel=\"stylesheet\" href=style.css\">
-    <meta charset=\"UTF-8\">
+    <link rel="stylesheet" href="'.$szOutCssFile.'">
+    <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>");
+<body>');
     foreach($pngsource as $key => $value){
 
         fwrite($fo, '
-<i class="sprite" id="img'.$cptimg.'"></i>');
+<i class="sprite" id="img'.$cpthmtl.'"></i>');
+        $cpthmtl++;
     }
     fwrite($fo, "
 </body>
 </html>");
+    fclose($fo);
 }
-
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -382,14 +358,19 @@ function Debug($message)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cette fonction affiche le man
 function FuncHelp() {
-    echo 'CSS_GENERATOR(1) UserCommands CSS_GENERATOR(1)
+echo <<<EOL
+CSS_GENERATOR(1) UserCommands CSS_GENERATOR(1)
+
 NAME
      css_generator - sprite generator for HTML use
+
 SYNOPSIS
      css_generator [OPTIONS]. . . assets_folder
+
 DESCRIPTION
      Concatenate all images inside a folder in one sprite and write a style sheet ready to use. 
      Mandatory arguments to long options are mandatory for short options too.
+
      -r, --recursive
      Look for images into the assets_folder passed as arguement and all of its subdirectories.
      
@@ -398,18 +379,25 @@ DESCRIPTION
      
      -s, --output-style=STYLE
      Name of the generated stylesheet. If blank, the default name is « style.css ».
+
      -p, --padding=NUMBER
      Add padding between images of NUMBER pixels.
      
      -d, --delete
      Delete the original PNG after the merge. If blank, the default style is false.
+
      -o, --override-size=SIZE
      Force each images of the sprite to fit a size of SIZExSIZE pixels.
      
      -c, --columns_number=NUMBER
      The maximum number of elements to be generated horizontally.
      
-';
+     -w, --row
+     Option to get the sprite in width
+     
+     --debug
+     Debug option
+EOL;
 
     exit ("");
 
@@ -441,7 +429,7 @@ function FuncTestArgs()
     global $argc, $argv ;
 
     // Variables d'aguments passés en ligne de commande
-    global $fRecursive, $iOverrideValue, $fOverrideSize, $szOutPngFile, $szOutCssFile, $szFoldertoScan,$imaxColumnNumber,$fDeletePNG,$fDebug;
+    global $fRecursive, $iOverrideValue, $fOverrideSize, $szOutPngFile, $szOutCssFile, $szFoldertoScan,$fSpriteRow,$fDeletePNG,$fDebug;
 
     // Tester le nombre minimal d'arguments
     // css_generator assets_folder
@@ -534,10 +522,10 @@ function FuncTestArgs()
                 case "--delete":
                     $fDeletePNG = true;
                     break;
-                case "-c":
-                case "--columns_number":
-                    echo "Number of column=".$value."\n";
-                    $imaxColumnNumber= $value;
+                case "-w":
+                case "--row":
+                    echo "Option ROW activée\n";
+                    $fSpriteRow=true;
                     break;
                 case "-o":
                 case "--override-size=":
@@ -569,8 +557,8 @@ function FuncTestArgs()
     Debug("var szOutPngFile=".$szOutPngFile);
     Debug("var fDeletePNG=".BooleanToString($fDeletePNG));
     Debug("var szOutCssFile=".$szOutCssFile);
-    Debug("var imaxColumnNumber=".$imaxColumnNumber);
     Debug("var fRecursive=".BooleanToString($fRecursive));
+    Debug("var fSpriteRow=".BooleanToString($fSpriteRow));
     Debug("var iOverrideValue=".$iOverrideValue);
     Debug("var fOverrideSize=".BooleanToString($fOverrideSize));
 
