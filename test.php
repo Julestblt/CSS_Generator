@@ -381,9 +381,6 @@ DESCRIPTION
      -o, --override-size=SIZE
      Force each images of the sprite to fit a size of SIZExSIZE pixels.
      
-     -c, --columns_number=NUMBER
-     The maximum number of elements to be generated horizontally.
-     
      -w, --row
      Option to get the sprite in width
      
