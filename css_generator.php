@@ -43,7 +43,7 @@ $szOutCssFile = "style.css";
 $fDeletePNG = false;
 
 // -w, --row
-// Create a sprite in large ( ---- )
+// Create a sprite in large example = ( ---- )
 $fSpriteRow = false;
 
 // --debug
@@ -384,9 +384,7 @@ DESCRIPTION
      --debug
      Debug option
 EOL;
-
     exit ("");
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -483,21 +481,21 @@ function FuncTestArgs()
                 case "-s":
                 case "--output-style":
                     if ($value <> "") {
-                        echo "Fichier CSS de sortie : " . $value . "\n";
+                        echo "Out CSS file : " . $value . "\n";
                         $szOutCssFile = $value;
                     } else FuncBadArgs($arg);
                     break;
                 case "-i":
                 case "--output-image":
                     if ($value <> "") {
-                        echo "Fichier PNG de sortie : " . $value . "\n";
+                        echo "Out PNG file : " . $value . "\n";
                         $szOutPngFile = $value;
                     } else FuncBadArgs($arg);
                     break;
                 case "-r":
                 case "--recursive":
                     if ($value == "") {
-                        echo "Option de récursivité activée\n";
+                        echo "Recursivity option activated\n";
                         $fRecursive = true;
                     } else FuncBadArgs($arg);
                     break;
@@ -506,17 +504,18 @@ function FuncTestArgs()
                     break;
                 case "-d":
                 case "--delete":
+                    echo "Delete of the png files\n";
                     $fDeletePNG = true;
                     break;
                 case "-w":
                 case "--row":
-                    echo "Option ROW activée\n";
+                    echo "ROW option activated\n";
                     $fSpriteRow=true;
                     break;
                 case "-o":
                 case "--override-size=":
                     if ($value <> "") {
-                        echo "Option de redimensionnement activée avec " . $value . "\n";
+                        echo "Resizing option with : " . $value . "px\n";
                         $iOverrideValue = $value;
                         $fOverrideSize = true;
                     } else FuncBadArgs($arg);
@@ -530,7 +529,7 @@ function FuncTestArgs()
                 if ($value <> "") {
                     echo "Fichier HTML de sortie : " . $value . "\n";
                     $szOutHTMLFile = $value;
-                    }
+                    } else FuncBadArgs($arg);
                     break;
                 default:
                     FuncBadArgs($arg);
